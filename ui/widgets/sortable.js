@@ -475,6 +475,17 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 				) {
 
 					this.direction = intersection === 1 ? "down" : "up";
+					if ( typeof this.options.fixed !== "undefined" ) {
+						if ( this.direction === "down" ) {
+							if ( $( itemElement ).hasClass( this.options.fixed.above ) ) {
+								break;
+							}
+						} else {
+							if ( $( itemElement ).hasClass( this.options.fixed.below ) ) {
+								break;
+							}
+						}
+					}
 
 					if ( this.options.tolerance === "pointer" ||
 							this._intersectsWithSides( item ) ) {
@@ -999,7 +1010,8 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 		var i, j, dist, itemWithLeastDistance, posProperty, sizeProperty, cur, nearBottom,
 			floating, axis,
 			innermostContainer = null,
-			innermostIndex = null;
+			innermostIndex = null,
+			lowestItem = null;
 
 		// Get innermost container that intersects with item
 		for ( i = this.containers.length - 1; i >= 0; i-- ) {
@@ -1052,6 +1064,7 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 			// append our item near it
 			dist = 10000;
 			itemWithLeastDistance = null;
+
 			floating = innermostContainer.floating || this._isFloating( this.currentItem );
 			posProperty = floating ? "left" : "top";
 			sizeProperty = floating ? "width" : "height";
@@ -1067,15 +1080,16 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 					continue;
 				}
 
-				cur = this.items[ j ].item.offset()[ posProperty ];
+				lowestItem = this.items[ j ];
+				cur = lowestItem.item.offset()[ posProperty ];
 				nearBottom = false;
-				if ( event[ axis ] - cur > this.items[ j ][ sizeProperty ] / 2 ) {
+				if ( event[ axis ] - cur > lowestItem[ sizeProperty ] / 2 ) {
 					nearBottom = true;
 				}
 
 				if ( Math.abs( event[ axis ] - cur ) < dist ) {
 					dist = Math.abs( event[ axis ] - cur );
-					itemWithLeastDistance = this.items[ j ];
+					itemWithLeastDistance = lowestItem;
 					this.direction = nearBottom ? "up" : "down";
 				}
 			}
@@ -1093,9 +1107,33 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 				return;
 			}
 
-			itemWithLeastDistance ?
-				this._rearrange( event, itemWithLeastDistance, null, true ) :
+			if ( itemWithLeastDistance ) {
+				if ( typeof this.options.fixed !== "undefined" ) {
+					if ( this.direction === "down" ) {
+						if ( $( itemWithLeastDistance ).hasClass( this.options.fixed.above ) ) {
+							return;
+						}
+					} else {
+						if ( $( itemWithLeastDistance ).hasClass( this.options.fixed.below ) ) {
+							return;
+						}
+					}
+				}
+				this._rearrange( event, itemWithLeastDistance, null, true );
+			} else {
+				if ( typeof this.options.fixed !== "undefined"  && lowestItem !== null ) {
+					if ( this.direction === "down" ) {
+						if ( $( lowestItem ).hasClass( this.options.fixed.above ) ) {
+							return;
+						}
+					} else {
+						if ( $( lowestItem ).hasClass( this.options.fixed.below ) ) {
+							return;
+						}
+					}
+				}
 				this._rearrange( event, null, this.containers[ innermostIndex ].element, true );
+			}
 			this._trigger( "change", event, this._uiHash() );
 			this.containers[ innermostIndex ]._trigger( "change", event, this._uiHash( this ) );
 			this.currentContainer = this.containers[ innermostIndex ];

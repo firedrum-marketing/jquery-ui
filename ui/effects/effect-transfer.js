@@ -32,13 +32,15 @@
 	}
 }( function( $ ) {
 
-var effect;
-if ( $.uiBackCompat !== false ) {
-	effect = $.effects.define( "transfer", function( options, done ) {
-		$( this ).transfer( options, done );
-	} );
+if ( typeof $.effects.effect.transfer === "undefined" ) {
+	if ( $.uiBackCompat !== false ) {
+		$.effects.define( "transfer", function( options, done ) {
+			$( this ).transfer( options, done );
+		} );
+	}
 }
-return effect;
+
+return $.effects.effect.transfer;
 
 },
 	typeof global !== "undefined" ? global :

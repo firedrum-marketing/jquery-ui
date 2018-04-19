@@ -17,8 +17,13 @@
 	}
 }( function( $ ) {
 
-// This file is deprecated
-return $.ui.ie = !!/msie [\w.]+/.exec( navigator.userAgent.toLowerCase() );
+if ( typeof $.ui.ie === "undefined" ) {
+	// This file is deprecated
+	$.ui.ie = !!/msie [\w.]+/.exec( navigator.userAgent.toLowerCase() );
+}
+
+return $.ui.ie;
+
 },
 	typeof global !== "undefined" ? global :
 	typeof self !== "undefined" ? self :

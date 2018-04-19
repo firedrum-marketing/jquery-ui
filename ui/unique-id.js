@@ -31,27 +31,31 @@
 	}
 }( function( $ ) {
 
-return $.fn.extend( {
-	uniqueId: ( function() {
-		var uuid = 0;
+if ( typeof $.uniqueId === "undefined" ) {
+	$.fn.extend( {
+		uniqueId: ( function() {
+			var uuid = 0;
 
-		return function() {
+			return function() {
+				return this.each( function() {
+					if ( !this.id ) {
+						this.id = "ui-id-" + ( ++uuid );
+					}
+				} );
+			};
+		} )(),
+
+		removeUniqueId: function() {
 			return this.each( function() {
-				if ( !this.id ) {
-					this.id = "ui-id-" + ( ++uuid );
+				if ( /^ui-id-\d+$/.test( this.id ) ) {
+					$( this ).removeAttr( "id" );
 				}
 			} );
-		};
-	} )(),
+		}
+	} );
+}
 
-	removeUniqueId: function() {
-		return this.each( function() {
-			if ( /^ui-id-\d+$/.test( this.id ) ) {
-				$( this ).removeAttr( "id" );
-			}
-		} );
-	}
-} );
+return $;
 
 },
 	typeof global !== "undefined" ? global :

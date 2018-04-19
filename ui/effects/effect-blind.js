@@ -32,43 +32,47 @@
 	}
 }( function( $ ) {
 
-return $.effects.define( "blind", "hide", function( options, done ) {
-	var map = {
-			up: [ "bottom", "top" ],
-			vertical: [ "bottom", "top" ],
-			down: [ "top", "bottom" ],
-			left: [ "right", "left" ],
-			horizontal: [ "right", "left" ],
-			right: [ "left", "right" ]
-		},
-		element = $( this ),
-		direction = options.direction || "up",
-		start = element.cssClip(),
-		animate = { clip: $.extend( {}, start ) },
-		placeholder = $.effects.createPlaceholder( element );
+if ( typeof $.effects.effect.blind === "undefined" ) {
+	$.effects.define( "blind", "hide", function( options, done ) {
+		var map = {
+				up: [ "bottom", "top" ],
+				vertical: [ "bottom", "top" ],
+				down: [ "top", "bottom" ],
+				left: [ "right", "left" ],
+				horizontal: [ "right", "left" ],
+				right: [ "left", "right" ]
+			},
+			element = $( this ),
+			direction = options.direction || "up",
+			start = element.cssClip(),
+			animate = { clip: $.extend( {}, start ) },
+			placeholder = $.effects.createPlaceholder( element );
 
-	animate.clip[ map[ direction ][ 0 ] ] = animate.clip[ map[ direction ][ 1 ] ];
+		animate.clip[ map[ direction ][ 0 ] ] = animate.clip[ map[ direction ][ 1 ] ];
 
-	if ( options.mode === "show" ) {
-		element.cssClip( animate.clip );
-		if ( placeholder ) {
-			placeholder.css( $.effects.clipToBox( animate ) );
+		if ( options.mode === "show" ) {
+			element.cssClip( animate.clip );
+			if ( placeholder ) {
+				placeholder.css( $.effects.clipToBox( animate ) );
+			}
+
+			animate.clip = start;
 		}
 
-		animate.clip = start;
-	}
+		if ( placeholder ) {
+			placeholder.animate( $.effects.clipToBox( animate ), options.duration, options.easing );
+		}
 
-	if ( placeholder ) {
-		placeholder.animate( $.effects.clipToBox( animate ), options.duration, options.easing );
-	}
-
-	element.animate( animate, {
-		queue: false,
-		duration: options.duration,
-		easing: options.easing,
-		complete: done
+		element.animate( animate, {
+			queue: false,
+			duration: options.duration,
+			easing: options.easing,
+			complete: done
+		} );
 	} );
-} );
+}
+
+return $.effects.effect.blind;
 
 },
 	typeof global !== "undefined" ? global :

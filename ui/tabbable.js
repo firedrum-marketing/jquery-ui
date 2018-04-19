@@ -31,13 +31,17 @@
 	}
 }( function( $ ) {
 
-return $.extend( $.expr.pseudos, {
-	tabbable: function( element ) {
-		var tabIndex = $.attr( element, "tabindex" ),
-			hasTabindex = tabIndex != null;
-		return ( !hasTabindex || tabIndex >= 0 ) && $.ui.focusable( element, hasTabindex );
-	}
-} );
+if ( typeof $.expr.pseudos.tabbable === "undefined" ) {
+	$.extend( $.expr.pseudos, {
+		tabbable: function( element ) {
+			var tabIndex = $.attr( element, "tabindex" ),
+				hasTabindex = tabIndex != null;
+			return ( !hasTabindex || tabIndex >= 0 ) && $.ui.focusable( element, hasTabindex );
+		}
+	} );
+}
+
+return $.expr.pseudos;
 
 },
 	typeof global !== "undefined" ? global :

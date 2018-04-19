@@ -32,30 +32,34 @@
 	}
 }( function( $ ) {
 
-return $.effects.define( "highlight", "show", function( options, done ) {
-	var element = $( this ),
-		animation = {
-			backgroundColor: element.css( "backgroundColor" )
-		};
+if ( typeof $.effects.effect.highlight === "undefined" ) {
+	$.effects.define( "highlight", "show", function( options, done ) {
+		var element = $( this ),
+			animation = {
+				backgroundColor: element.css( "backgroundColor" )
+			};
 
-	if ( options.mode === "hide" ) {
-		animation.opacity = 0;
-	}
+		if ( options.mode === "hide" ) {
+			animation.opacity = 0;
+		}
 
-	$.effects.saveStyle( element );
+		$.effects.saveStyle( element );
 
-	element
-		.css( {
-			backgroundImage: "none",
-			backgroundColor: options.color || "#ffff99"
-		} )
-		.animate( animation, {
-			queue: false,
-			duration: options.duration,
-			easing: options.easing,
-			complete: done
-		} );
-} );
+		element
+			.css( {
+				backgroundImage: "none",
+				backgroundColor: options.color || "#ffff99"
+			} )
+			.animate( animation, {
+				queue: false,
+				duration: options.duration,
+				easing: options.easing,
+				complete: done
+			} );
+	} );
+}
+
+return $.effects.effect.highlight;
 
 },
 	typeof global !== "undefined" ? global :

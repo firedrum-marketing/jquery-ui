@@ -17,13 +17,17 @@
 	}
 }( function( $ ) {
 
-// Internal use only
-return $.ui.escapeSelector = ( function() {
-	var selectorEscape = /([!"#$%&'()*+,./:;<=>?@[\]^`{|}~])/g;
-	return function( selector ) {
-		return selector.replace( selectorEscape, "\\$1" );
-	};
-} )();
+if ( typeof $.ui.escapeSelector === "undefined" ) {
+	// Internal use only
+	$.ui.escapeSelector = ( function() {
+		var selectorEscape = /([!"#$%&'()*+,./:;<=>?@[\]^`{|}~])/g;
+		return function( selector ) {
+			return selector.replace( selectorEscape, "\\$1" );
+		};
+	} )();
+}
+
+return $.ui.escapeSelector;
 
 },
 	typeof global !== "undefined" ? global :

@@ -32,37 +32,41 @@
 	}
 }( function( $ ) {
 
-return $.effects.define( "pulsate", "show", function( options, done ) {
-	var element = $( this ),
-		mode = options.mode,
-		show = mode === "show",
-		hide = mode === "hide",
-		showhide = show || hide,
+if ( typeof $.effects.effect.pulsate === "undefined" ) {
+	$.effects.define( "pulsate", "show", function( options, done ) {
+		var element = $( this ),
+			mode = options.mode,
+			show = mode === "show",
+			hide = mode === "hide",
+			showhide = show || hide,
 
-		// Showing or hiding leaves off the "last" animation
-		anims = ( ( options.times || 5 ) * 2 ) + ( showhide ? 1 : 0 ),
-		duration = options.duration / anims,
-		animateTo = 0,
-		i = 1,
-		queuelen = element.queue().length;
+			// Showing or hiding leaves off the "last" animation
+			anims = ( ( options.times || 5 ) * 2 ) + ( showhide ? 1 : 0 ),
+			duration = options.duration / anims,
+			animateTo = 0,
+			i = 1,
+			queuelen = element.queue().length;
 
-	if ( show || !element.is( ":visible" ) ) {
-		element.css( "opacity", 0 ).show();
-		animateTo = 1;
-	}
+		if ( show || !element.is( ":visible" ) ) {
+			element.css( "opacity", 0 ).show();
+			animateTo = 1;
+		}
 
-	// Anims - 1 opacity "toggles"
-	for ( ; i < anims; i++ ) {
+		// Anims - 1 opacity "toggles"
+		for ( ; i < anims; i++ ) {
+			element.animate( { opacity: animateTo }, duration, options.easing );
+			animateTo = 1 - animateTo;
+		}
+
 		element.animate( { opacity: animateTo }, duration, options.easing );
-		animateTo = 1 - animateTo;
-	}
 
-	element.animate( { opacity: animateTo }, duration, options.easing );
+		element.queue( done );
 
-	element.queue( done );
+		$.effects.unshift( element, queuelen, anims + 1 );
+	} );
+}
 
-	$.effects.unshift( element, queuelen, anims + 1 );
-} );
+return $.effects.effect.pulsate;
 
 },
 	typeof global !== "undefined" ? global :

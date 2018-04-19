@@ -37,14 +37,18 @@
 	}
 }( function( $ ) {
 
-return $.effects.define( "puff", "hide", function( options, done ) {
-	var newOptions = $.extend( true, {}, options, {
-		fade: true,
-		percent: parseInt( options.percent, 10 ) || 150
-	} );
+if ( typeof $.effects.effect.puff === "undefined" ) {
+	$.effects.define( "puff", "hide", function( options, done ) {
+		var newOptions = $.extend( true, {}, options, {
+			fade: true,
+			percent: parseInt( options.percent, 10 ) || 150
+		} );
 
-	$.effects.effect.scale.call( this, newOptions, done );
-} );
+		$.effects.effect.scale.call( this, newOptions, done );
+	} );
+}
+
+return $.effects.effect.puff;
 
 },
 	typeof global !== "undefined" ? global :

@@ -11761,6 +11761,7 @@ if ( typeof $.ui.draggable === "undefined" ) {
 						// Fire the start events of the sortable with our passed browser event,
 						// and our own helper (so it doesn't create a new one)
 						event.target = ui.helper;//sortable.currentItem[ 0 ];
+						event.sortable = sortable;
 						sortable._mouseCapture( event, true );
 						sortable._mouseStart( event, true, true );
 
